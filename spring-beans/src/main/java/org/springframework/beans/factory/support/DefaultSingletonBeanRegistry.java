@@ -71,7 +71,7 @@ import org.springframework.util.StringUtils;
 public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements SingletonBeanRegistry {
 
 	/** Cache of singleton objects: bean name to bean instance.
-	 *  最终的ioc容器
+	 *  最终的 ioc容器
 	 * */
 	private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
 

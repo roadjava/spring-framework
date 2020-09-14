@@ -117,7 +117,7 @@ import org.springframework.util.StringUtils;
  * methods to be replaced by the container at runtime. This is essentially a type-safe
  * version of {@code getBean(Class, args)} and {@code getBean(String, args)}.
  * See {@link Lookup @Lookup's javadoc} for details.
- *
+ * 解析出bean中被@Autowired注解的属性或方法
  * @author Juergen Hoeller
  * @author Mark Fisher
  * @author Stephane Nicoll
@@ -162,6 +162,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 		this.autowiredAnnotationTypes.add(Autowired.class);
 		this.autowiredAnnotationTypes.add(Value.class);
 		try {
+			// jsr330注解inject复用本类
 			this.autowiredAnnotationTypes.add((Class<? extends Annotation>)
 					ClassUtils.forName("javax.inject.Inject", AutowiredAnnotationBeanPostProcessor.class.getClassLoader()));
 			logger.trace("JSR-330 'javax.inject.Inject' annotation found and supported for autowiring");
@@ -631,12 +632,14 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 				value = resolvedCachedArgument(beanName, this.cachedFieldValue);
 			}
 			else {
+				// 合成dependencyDescriptor
 				DependencyDescriptor desc = new DependencyDescriptor(field, this.required);
 				desc.setContainingClass(bean.getClass());
 				Set<String> autowiredBeanNames = new LinkedHashSet<>(1);
 				Assert.state(beanFactory != null, "No BeanFactory available");
 				TypeConverter typeConverter = beanFactory.getTypeConverter();
 				try {
+					// 调用依赖解析,返回User@2578 spring的bean对象
 					value = beanFactory.resolveDependency(desc, beanName, autowiredBeanNames, typeConverter);
 				}
 				catch (BeansException ex) {

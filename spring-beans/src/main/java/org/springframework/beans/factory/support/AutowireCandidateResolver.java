@@ -27,6 +27,7 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @author Mark Fisher
  * @since 2.5
+ * 自动绑定候选者解析器
  */
 public interface AutowireCandidateResolver {
 

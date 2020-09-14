@@ -52,7 +52,7 @@ import org.springframework.util.ObjectUtils;
 @SuppressWarnings("serial")
 public class DependencyDescriptor extends InjectionPoint implements Serializable {
 
-	private final Class<?> declaringClass;
+	private final Class<?> declaringClass; //class spring.ioc.ObjectProviderCfg
 
 	@Nullable
 	private String methodName;
@@ -63,16 +63,16 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	private int parameterIndex;
 
 	@Nullable
-	private String fieldName;
+	private String fieldName; // user
 
-	private final boolean required;
+	private final boolean required; // @Autowire 未配置required = false即为true
 
-	private final boolean eager;
+	private final boolean eager; // true 没有@Lazy注解
 
 	private int nestingLevel = 1;
 
 	@Nullable
-	private Class<?> containingClass;
+	private Class<?> containingClass; // class spring.ioc.ObjectProviderCfg$$EnhancerBySpringCGLIB$$e5196ab9
 
 	@Nullable
 	private transient volatile ResolvableType resolvableType;
@@ -381,6 +381,7 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	/**
 	 * Determine the declared (non-generic) type of the wrapped parameter/field.
 	 * @return the declared type (never {@code null})
+	 * 如:class spring.ioc.User
 	 */
 	public Class<?> getDependencyType() {
 		if (this.field != null) {

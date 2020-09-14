@@ -92,6 +92,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 
 	/**
 	 * Return the name of the parent definition of this bean definition, if any.
+	 * bean的配置有 parent="user" 这个属性，这里获取到的即user这个beanName
 	 */
 	@Nullable
 	String getParentName();

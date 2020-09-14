@@ -45,6 +45,7 @@ import org.springframework.util.Assert;
  * @author Phillip Webb
  * @since 3.0
  * @see AnnotationConfigApplicationContext#register
+ * 解析基于注解的bean配置
  */
 public class AnnotatedBeanDefinitionReader {
 

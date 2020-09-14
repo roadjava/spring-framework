@@ -36,6 +36,7 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 1.1
  * @see org.springframework.core.io.Resource
+ * 解析xml类型的bean配置
  */
 public interface BeanDefinitionReader {
 

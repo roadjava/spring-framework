@@ -727,7 +727,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	//---------------------------------------------------------------------
 	// Implementation of ConfigurableListableBeanFactory interface
 	//---------------------------------------------------------------------
-
+	// 在refresh-->
+	// org.springframework.context.support.AbstractApplicationContext.
+	// prepareBeanFactory 中被调用
 	@Override
 	public void registerResolvableDependency(Class<?> dependencyType, @Nullable Object autowiredValue) {
 		Assert.notNull(dependencyType, "Dependency type must not be null");
@@ -1477,6 +1479,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		String[] candidateNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 				this, requiredType, true, descriptor.isEager());
 		Map<String, Object> result = new LinkedHashMap<>(candidateNames.length);
+		// resolvableDependencies:可解析依赖,也翻译成非spring管理对象，游离对象
 		for (Map.Entry<Class<?>, Object> classObjectEntry : this.resolvableDependencies.entrySet()) {
 			// interface org.springframework.context.ApplicationContext
 			Class<?> autowiringType = classObjectEntry.getKey();

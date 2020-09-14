@@ -133,7 +133,7 @@ import org.springframework.util.StringValueResolver;
  * <p><b>NOTE:</b> Annotation injection will be performed <i>before</i> XML injection; thus
  * the latter configuration will override the former for properties wired through
  * both approaches.
- *
+ * 处理jsr250提出的通用注解@resource和@PostConstruct和@PreDestroy
  * @author Juergen Hoeller
  * @since 2.5
  * @see #setAlwaysUseJndiLookup

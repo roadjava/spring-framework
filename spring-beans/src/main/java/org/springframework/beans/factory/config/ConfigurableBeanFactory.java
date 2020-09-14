@@ -54,6 +54,8 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	 * Scope identifier for the standard singleton scope: {@value}.
 	 * <p>Custom scopes can be added via {@code registerScope}.
 	 * @see #registerScope
+	 * spring bean的作用域:singleton,prototype,request,session,application
+	 * 后3种参见org.springframework.web.context.WebApplicationContext
 	 */
 	String SCOPE_SINGLETON = "singleton";
 

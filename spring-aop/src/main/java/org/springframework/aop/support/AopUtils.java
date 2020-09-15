@@ -285,6 +285,8 @@ public abstract class AopUtils {
 			return ((IntroductionAdvisor) advisor).getClassFilter().matches(targetClass);
 		}
 		else if (advisor instanceof PointcutAdvisor) {
+			// advisor:InstantiationModelAwarePointcutAdvisor
+			// targetClass:class spring.aop.service.impl.AopServiceImpl
 			PointcutAdvisor pca = (PointcutAdvisor) advisor;
 			return canApply(pca.getPointcut(), targetClass, hasIntroductions);
 		}
@@ -308,6 +310,11 @@ public abstract class AopUtils {
 		}
 		List<Advisor> eligibleAdvisors = new ArrayList<>();
 		for (Advisor candidate : candidateAdvisors) {
+			// InstantiationModelAwarePointcutAdvisor:
+			// expression [spring.aop.MyAspect.pt()];
+			// advice method [public void spring.aop.MyAspect.
+			// aroundMethod(org.aspectj.lang.ProceedingJoinPoint)
+			// throws java.lang.NoSuchMethodException]; perClauseKind=SINGLETON
 			if (candidate instanceof IntroductionAdvisor && canApply(candidate, clazz)) {
 				eligibleAdvisors.add(candidate);
 			}
@@ -318,6 +325,7 @@ public abstract class AopUtils {
 				// already processed
 				continue;
 			}
+			// 进入到这个canApply方法
 			if (canApply(candidate, clazz, hasIntroductions)) {
 				eligibleAdvisors.add(candidate);
 			}

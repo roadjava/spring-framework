@@ -61,9 +61,12 @@ public abstract class AdviceModeImportSelector<A extends Annotation> implements 
 	 * @throws IllegalArgumentException if expected annotation {@code A} is not present
 	 * on the importing {@code @Configuration} class or if {@link #selectImports(AdviceMode)}
 	 * returns {@code null}
+	 * // class spring.tx.TxConfig
 	 */
 	@Override
 	public final String[] selectImports(AnnotationMetadata importingClassMetadata) {
+		//getClass(): class org.springframework.transaction.annotation.TransactionManagementConfigurationSelector
+		// annType:interface org.springframework.transaction.annotation.EnableTransactionManagement
 		Class<?> annType = GenericTypeResolver.resolveTypeArgument(getClass(), AdviceModeImportSelector.class);
 		Assert.state(annType != null, "Unresolvable type argument for AdviceModeImportSelector");
 

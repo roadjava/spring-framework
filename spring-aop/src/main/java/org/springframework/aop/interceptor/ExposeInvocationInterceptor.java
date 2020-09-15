@@ -90,6 +90,8 @@ public final class ExposeInvocationInterceptor implements MethodInterceptor, Pri
 		MethodInvocation oldInvocation = invocation.get();
 		invocation.set(mi);
 		try {
+			// org.springframework.aop.framework.CglibAopProxy.CglibMethodInvocation.proceed
+			// 又回去了，但原来的索引+1了
 			return mi.proceed();
 		}
 		finally {

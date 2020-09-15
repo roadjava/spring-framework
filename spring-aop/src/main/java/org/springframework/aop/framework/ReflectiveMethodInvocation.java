@@ -159,7 +159,17 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 	@Nullable
 	public Object proceed() throws Throwable {
 		// We start with an index of -1 and increment early.
+		/*
+		0 = {ExposeInvocationInterceptor@2426}
+		1 = {AspectJAfterThrowingAdvice@2427} "org.springframework.aop.aspectj.AspectJAfterThrowingAdvice: advice method [public void spring.aop.MyAspect.whenEx(org.aspectj.lang.JoinPoint,java.lang.Exception)]; aspect name 'myAspect'"
+		2 = {AfterReturningAdviceInterceptor@2428}
+		3 = {AspectJAfterAdvice@2429} "org.springframework.aop.aspectj.AspectJAfterAdvice: advice method [public void spring.aop.MyAspect.after(org.aspectj.lang.JoinPoint)]; aspect name 'myAspect'"
+		4 = {InterceptorAndDynamicMethodMatcher@2430}
+		5 = {MethodBeforeAdviceInterceptor@2431}
+		 */
 		if (this.currentInterceptorIndex == this.interceptorsAndDynamicMethodMatchers.size() - 1) {
+			// 当从第6个(MethodBeforeAdviceInterceptor@2431)过来时进入，执行方法调用后
+			// 直接return,即代表第6个执行完成,返回到第5个的栈帧处
 			return invokeJoinpoint();
 		}
 
@@ -183,6 +193,16 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 		else {
 			// It's an interceptor, so we just invoke it: The pointcut will have
 			// been evaluated statically before this object was constructed.
+			// org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke
+			/*
+			以上6个拦截器分别调用的invoke是:
+			1.org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke
+			2.org.springframework.aop.aspectj.AspectJAfterThrowingAdvice.invoke
+			3.org.springframework.aop.framework.adapter.AfterReturningAdviceInterceptor.invoke
+			4.org.springframework.aop.aspectj.AspectJAfterAdvice.invoke
+			5.org.aopalliance.intercept.MethodInterceptor.invoke
+			6.org.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor.invoke
+			 */
 			return ((MethodInterceptor) interceptorOrInterceptionAdvice).invoke(this);
 		}
 	}

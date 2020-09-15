@@ -657,7 +657,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 		}
 
 		@Override
-		@Nullable
+		@Nullable // 拦截被代理对象的目标方法的执行
 		public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
 			Object oldProxy = null;
 			boolean setProxyContext = false;
@@ -672,6 +672,9 @@ class CglibAopProxy implements AopProxy, Serializable {
 				// Get as late as possible to minimize the time we "own" the target, in case it comes from a pool...
 				target = targetSource.getTarget();
 				Class<?> targetClass = (target != null ? target.getClass() : null);
+				// 获取目标方法的拦截器链
+				// method:public void spring.aop.service.impl.AopServiceImpl.index(java.lang.String)
+				// targetClass:class spring.aop.service.impl.AopServiceImpl
 				List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);
 				Object retVal;
 				// Check whether we only have one InvokerInterceptor: that is,
@@ -744,6 +747,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 		@Nullable
 		public Object proceed() throws Throwable {
 			try {
+				// org.springframework.aop.framework.ReflectiveMethodInvocation.proceed
 				return super.proceed();
 			}
 			catch (RuntimeException ex) {

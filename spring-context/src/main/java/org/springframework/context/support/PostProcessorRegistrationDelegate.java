@@ -184,10 +184,17 @@ final class PostProcessorRegistrationDelegate {
 		// modified the original metadata, e.g. replacing placeholders in values...
 		beanFactory.clearMetadataCache();
 	}
-
+	//1.获取ioc容器中已经定义的实现了beanPostProcessor的类的名字
+	//2.根据这些名字分别调用到doGetBean来创建对象
+	//3.把这些对象放到 AbstractBeanFactory.beanPostProcessors中
 	public static void registerBeanPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, AbstractApplicationContext applicationContext) {
-
+		/*
+		[org.springframework.context.annotation.internalAutowiredAnnotationProcessor
+		,org.springframework.context.annotation.internalCommonAnnotationProcessor
+		,org.springframework.context.annotation.internalPersistenceAnnotationProcessor
+		获取ioc容器中已经定义的实现了beanPostProcessor的类的名字
+		 */
 		String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanPostProcessor.class, true, false);
 
 		// Register BeanPostProcessorChecker that logs an info message when
@@ -204,6 +211,7 @@ final class PostProcessorRegistrationDelegate {
 		List<String> nonOrderedPostProcessorNames = new ArrayList<>();
 		for (String ppName : postProcessorNames) {
 			if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
+				// 创建BeanPostProcessor对象
 				BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
 				priorityOrderedPostProcessors.add(pp);
 				if (pp instanceof MergedBeanDefinitionPostProcessor) {

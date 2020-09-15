@@ -179,7 +179,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	/** List of bean definition names, in registration order. */
 	private volatile List<String> beanDefinitionNames = new ArrayList<>(256);
 
-	/** List of names of manually registered singletons, in registration order. */
+	/** List of names of manually registered singletons, in registration order.
+	 * environment,systemProperties,systemEnvironment,
+	 * org.springframework.context.annotation.ConfigurationClassPostProcessor.importRegistry
+	 * */
 	private volatile Set<String> manualSingletonNames = new LinkedHashSet<>(16);
 
 	/** Cached array of bean definition names in case of frozen configuration. */
@@ -492,9 +495,14 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return getBeanNamesForType(type, true, true);
 	}
 
+	/**
+	 * type:interface org.springframework.beans.factory.config.BeanPostProcessor
+	 * includeNonSingletons:true
+	 * allowEagerInit：false
+	 */
 	@Override
 	public String[] getBeanNamesForType(@Nullable Class<?> type, boolean includeNonSingletons, boolean allowEagerInit) {
-		if (!isConfigurationFrozen() || type == null || !allowEagerInit) {
+		if (!isConfigurationFrozen() || type == null || !allowEagerInit) { // 进入
 			return doGetBeanNamesForType(ResolvableType.forRawClass(type), includeNonSingletons, allowEagerInit);
 		}
 		Map<Class<?>, String[]> cache =
@@ -517,7 +525,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		for (String beanName : this.beanDefinitionNames) {
 			// Only consider bean as eligible if the bean name
 			// is not defined as alias for some other bean.
-			if (!isAlias(beanName)) {
+			// beanName:比如iocLifeBean
+			if (!isAlias(beanName)) { // 一般都会进来
 				try {
 					RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 					// Only check bean definition if it is complete.

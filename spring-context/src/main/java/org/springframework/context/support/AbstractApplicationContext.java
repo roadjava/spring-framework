@@ -546,6 +546,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				registerBeanPostProcessors(beanFactory);
 
 				// Initialize message source for this context.
+				// web要用的国际化配置,ResourceBundleMessageSource的beanName为何要
+				// 配置为 messageSource,因为用的是contains("messageSource")
 				initMessageSource();
 
 				// Initialize event multicaster for this context.

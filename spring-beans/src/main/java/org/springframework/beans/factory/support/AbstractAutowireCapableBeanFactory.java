@@ -596,7 +596,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Initialize the bean instance.
 		Object exposedObject = bean;
 		try {
-			// 填充bean即属性赋值
+			// 填充bean即属性赋值,此时创建出来的bean属性空空
 			populateBean(beanName, mbd, instanceWrapper);
 			// 初始化bean
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
@@ -1181,6 +1181,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			return obtainFromSupplier(instanceSupplier, beanName);
 		}
 
+		// 通过@Bean注解创建的bean,方法名相当于实例工厂方法
 		if (mbd.getFactoryMethodName() != null) {
 			return instantiateUsingFactoryMethod(beanName, mbd, args);
 		}

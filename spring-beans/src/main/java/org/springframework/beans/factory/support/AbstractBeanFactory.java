@@ -166,7 +166,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	@Nullable
 	private SecurityContextProvider securityContextProvider;
 
-	/** Map from bean name to merged RootBeanDefinition. */
+	/** Map from bean name to merged RootBeanDefinition.合并后的bean定义 */
 	private final Map<String, RootBeanDefinition> mergedBeanDefinitions = new ConcurrentHashMap<>(256);
 
 	/** Names of beans that have already been created at least once. */
@@ -1311,14 +1311,21 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			throws BeanDefinitionStoreException {
 
 		synchronized (this.mergedBeanDefinitions) {
+			// m:merged
 			RootBeanDefinition mbd = null;
 			RootBeanDefinition previous = null;
 
 			// Check with full lock now in order to enforce the same merged instance.
+			/*
+				containingBd:bean定义中嵌套的bean，类似：
+				<property name="user">
+					<bean class="User">
+				</property>
+			 */
 			if (containingBd == null) {
 				mbd = this.mergedBeanDefinitions.get(beanName);
 			}
-
+			// stale:过期的
 			if (mbd == null || mbd.stale) {
 				previous = mbd;
 				if (bd.getParentName() == null) {
@@ -1335,7 +1342,15 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					BeanDefinition pbd;
 					try {
 						String parentBeanName = transformedBeanName(bd.getParentName());
+						// beanName:son parentBeanName:parentBean
 						if (!beanName.equals(parentBeanName)) {
+							// pbd:Root bean: class [spring.bean.beanlife.bean.ParentBean];
+							// scope=singleton; abstract=false; lazyInit=false;
+							// autowireMode=0; dependencyCheck=0;
+							// autowireCandidate=true; primary=true;
+							// factoryBeanName=null; factoryMethodName=null;
+							// initMethodName=null; destroyMethodName=null;
+							// defined in class path resource [spring/bean/beans-life.xml]
 							pbd = getMergedBeanDefinition(parentBeanName);
 						}
 						else {
@@ -1356,6 +1371,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					}
 					// Deep copy with overridden values.
 					mbd = new RootBeanDefinition(pbd);
+					// bd:SonBean,用子类的值进行覆盖
 					mbd.overrideFrom(bd);
 				}
 

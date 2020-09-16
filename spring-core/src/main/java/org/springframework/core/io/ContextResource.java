@@ -26,6 +26,7 @@ package org.springframework.core.io;
  * @author Juergen Hoeller
  * @since 2.5
  * @see org.springframework.web.context.support.ServletContextResource
+ * 针对servlet的resource
  */
 public interface ContextResource extends Resource {
 

@@ -88,6 +88,12 @@ public class BeanFactoryAdvisorRetrievalHelper {
 				}
 				else {
 					try {
+						// org.springframework.aop.support.DefaultBeanFactoryPointcutAdvisor: pointcut [AspectJExpressionPointcut: () execution(* spring.aop..*UserService.*(..))]; advice bean 'aopByCliassic2'
+						/*
+						aspectjpointcutadvisor:
+						advice=org.springframework.aop.aspectj.AspectJMethodBeforeAdvice: advice method [public void spring.aop.AopByAspectjAndXml.beforeProcess()]; aspect name 'aopByAspectjAndXml'
+						pc=org.springframework.aop.support.ComposablePointcut: AspectJExpressionPointcut: () execution(* spring.aop..MoneyServiceImpl.*(..)), org.springframework.aop.support.MethodMatchers$IntersectionIntroductionAwareMethodMatcher: org.springframework.aop.aspectj.AbstractAspectJAdvice$AdviceExcludingMethodMatcher: public void spring.aop.AopByAspectjAndXml.beforeProcess(), AspectJExpressionPointcut: () execution(* spring.aop..MoneyServiceImpl.*(..))
+						 */
 						advisors.add(this.beanFactory.getBean(name, Advisor.class));
 					}
 					catch (BeanCreationException ex) {

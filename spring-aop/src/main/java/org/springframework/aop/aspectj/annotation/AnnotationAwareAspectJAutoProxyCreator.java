@@ -89,9 +89,14 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 	@Override
 	protected List<Advisor> findCandidateAdvisors() {
 		// Add all the Spring advisors found according to superclass rules.
+		// 在xml中配置的
+		// aop:advisor(org.springframework.aop.support.DefaultBeanFactoryPointcutAdvisor: pointcut [AspectJExpressionPointcut: () execution(* spring.aop..*UserService.*(..))]; advice bean 'aopByCliassic2')
+		// 和aop:aspect(org.springframework.aop.aspectj.AspectJMethodBeforeAdvice: advice method [public void spring.aop.AopByAspectjAndXml.beforeProcess()]; aspect name 'aopByAspectjAndXml')
 		List<Advisor> advisors = super.findCandidateAdvisors();
 		// Build Advisors for all AspectJ aspects in the bean factory.
 		if (this.aspectJAdvisorsBuilder != null) {
+			// 获取配置有@aspectj注解的类里面的所有增强
+			// 将提取结果加入缓存
 			advisors.addAll(this.aspectJAdvisorsBuilder.buildAspectJAdvisors());
 		}
 		return advisors;

@@ -169,6 +169,7 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 		MediaType contentType;
 		boolean noContentType = false;
 		try {
+			// application/json;charset=UTF-8
 			contentType = inputMessage.getHeaders().getContentType();
 		}
 		catch (InvalidMediaTypeException ex) {
@@ -178,8 +179,9 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 			noContentType = true;
 			contentType = MediaType.APPLICATION_OCTET_STREAM;
 		}
-
+		// class com.roadjava.handlers.springmvc.MvcHandler
 		Class<?> contextClass = parameter.getContainingClass();
+		// class com.roadjava.beans.springmvc.Computer
 		Class<T> targetClass = (targetType instanceof Class ? (Class<T>) targetType : null);
 		if (targetClass == null) {
 			ResolvableType resolvableType = ResolvableType.forMethodParameter(parameter);
@@ -192,7 +194,15 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 		EmptyBodyCheckingHttpInputMessage message;
 		try {
 			message = new EmptyBodyCheckingHttpInputMessage(inputMessage);
-
+			/*
+			0 = {ByteArrayHttpMessageConverter@5968}
+			1 = {StringHttpMessageConverter@5969}
+			2 = {ResourceHttpMessageConverter@5970}
+			3 = {ResourceRegionHttpMessageConverter@5971}
+			4 = {SourceHttpMessageConverter@5972}
+			5 = {AllEncompassingFormHttpMessageConverter@5973}
+			6 = {Jaxb2RootElementHttpMessageConverter@5974}
+			 */
 			for (HttpMessageConverter<?> converter : this.messageConverters) {
 				Class<HttpMessageConverter<?>> converterType = (Class<HttpMessageConverter<?>>) converter.getClass();
 				GenericHttpMessageConverter<?> genericConverter =

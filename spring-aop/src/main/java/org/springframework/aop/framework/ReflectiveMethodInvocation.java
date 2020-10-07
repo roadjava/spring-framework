@@ -169,7 +169,9 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 		 */
 		if (this.currentInterceptorIndex == this.interceptorsAndDynamicMethodMatchers.size() - 1) {
 			// 当从第6个(MethodBeforeAdviceInterceptor@2431)过来时进入，执行方法调用后
-			// 直接return,即代表第6个执行完成,返回到第5个的栈帧处
+			// 直接return,即代表第6个执行完成,返回到第5个的栈帧(栈帧存储了方法的局部变量表、
+			// 操作数栈、动态连接和方法返回地址等信息。每一个方法从调用开始至执行完成的过程，
+			// 都对应着一个栈帧在虚拟机里面从入栈到出栈的过程。)
 			return invokeJoinpoint();
 		}
 

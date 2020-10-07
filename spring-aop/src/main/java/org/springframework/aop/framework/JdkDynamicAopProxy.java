@@ -150,13 +150,15 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 	 * Implementation of {@code InvocationHandler.invoke}.
 	 * <p>Callers will see exactly the exception thrown by the target,
 	 * unless a hook method throws an exception.
+	 * proxy:$Proxy37@3158 spring.aop.service.impl.HouseServiceImpl@6e9c413e
+	 * method:public abstract void spring.aop.service.HouseService.renting()
 	 */
 	@Override
 	@Nullable
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		Object oldProxy = null;
 		boolean setProxyContext = false;
-
+		// SingletonTargetSource for target object [spring.aop.service.impl.HouseServiceImpl@6e9c413e]
 		TargetSource targetSource = this.advised.targetSource;
 		Object target = null;
 
@@ -189,10 +191,12 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 
 			// Get as late as possible to minimize the time we "own" the target,
 			// in case it comes from a pool.
-			target = targetSource.getTarget();
+			target = targetSource.getTarget();//HouseServiceImpl的实例
+			// class spring.aop.service.impl.HouseServiceImpl
 			Class<?> targetClass = (target != null ? target.getClass() : null);
 
-			// Get the interception chain for this method.
+			// Get the interception chain for this method. 不包含method本身
+			// [advice(AopByClassic1@1234)]
 			List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);
 
 			// Check whether we have any advice. If we don't, we can fallback on direct

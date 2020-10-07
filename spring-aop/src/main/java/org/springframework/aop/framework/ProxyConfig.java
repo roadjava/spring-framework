@@ -85,6 +85,9 @@ public class ProxyConfig implements Serializable {
 
 	/**
 	 * Return whether proxies should perform aggressive optimizations.
+	 * 用来控制通过CGLIB创建的代理是否使用激进的优化策略，
+	 * 除非完全了解AOP代理如何处理优化，否则不推荐用户使用这个设置。
+	 * 目前这个属性仅用于CGLIB 代理，对于JDK动态代理（缺省代理）无效。
 	 */
 	public boolean isOptimize() {
 		return this.optimize;

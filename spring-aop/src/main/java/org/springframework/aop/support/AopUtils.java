@@ -223,6 +223,7 @@ public abstract class AopUtils {
 	 */
 	public static boolean canApply(Pointcut pc, Class<?> targetClass, boolean hasIntroductions) {
 		Assert.notNull(pc, "Pointcut must not be null");
+		//通过Pointcut的classFilter条件判断此类是否能匹配
 		if (!pc.getClassFilter().matches(targetClass)) {
 			return false;
 		}
@@ -245,8 +246,12 @@ public abstract class AopUtils {
 		classes.addAll(ClassUtils.getAllInterfacesForClassAsSet(targetClass));
 
 		for (Class<?> clazz : classes) {
+			// clazz:class spring.aop.service.impl.HouseServiceImpl
 			Method[] methods = ReflectionUtils.getAllDeclaredMethods(clazz);
 			for (Method method : methods) {
+				// method : public void spring.aop.service.impl.HouseServiceImpl.renting()
+				// 走到org.springframework.aop.aspectj.AspectJExpressionPointcut.matches(m, z, false)
+				//判断该方法是否能匹配Pointcut中的规则，如果有一个方法能匹配，则返回true
 				if (introductionAwareMethodMatcher != null ?
 						introductionAwareMethodMatcher.matches(method, targetClass, hasIntroductions) :
 						methodMatcher.matches(method, targetClass)) {

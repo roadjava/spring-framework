@@ -302,6 +302,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (bean != null) {
 			Object cacheKey = getCacheKey(bean.getClass(), beanName);
 			if (this.earlyProxyReferences.remove(cacheKey) != bean) {
+				// 此处即返回的是aop代理后的对象
 				return wrapIfNecessary(bean, beanName, cacheKey);
 			}
 		}
@@ -341,6 +342,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (StringUtils.hasLength(beanName) && this.targetSourcedBeans.contains(beanName)) {
 			return bean;
 		}
+		// 已经增强过了
 		if (Boolean.FALSE.equals(this.advisedBeans.get(cacheKey))) {
 			return bean;
 		}
@@ -470,10 +472,13 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		}
 
 		Advisor[] advisors = buildAdvisors(beanName, specificInterceptors);
+		// 加入增强
 		proxyFactory.addAdvisors(advisors);
+		// 加入要被代理的目标
 		proxyFactory.setTargetSource(targetSource);
 		customizeProxyFactory(proxyFactory);
-
+		// 用来控制代理工厂proxyFactory被配置之后，是否还允许被修改,默认
+		// 是false (即在代理被配置之后，不允许修改代理的配置)。
 		proxyFactory.setFrozen(this.freezeProxy);
 		if (advisorsPreFiltered()) {
 			proxyFactory.setPreFiltered(true);

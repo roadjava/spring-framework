@@ -66,6 +66,7 @@ public interface PlatformTransactionManager extends TransactionManager {
 	 * @see TransactionDefinition#getIsolationLevel
 	 * @see TransactionDefinition#getTimeout
 	 * @see TransactionDefinition#isReadOnly
+	 * 返回当前活动的事务或者创建一个新的事务
 	 */
 	TransactionStatus getTransaction(@Nullable TransactionDefinition definition)
 			throws TransactionException;

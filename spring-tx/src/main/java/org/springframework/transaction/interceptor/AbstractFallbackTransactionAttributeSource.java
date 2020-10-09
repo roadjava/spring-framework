@@ -109,6 +109,8 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 		}
 		else {
 			// We need to work it out.
+			// 如果缓存中没有，工作又委托给了computeTransactionAttribute函数,查出的
+			// txAttr再放入cache
 			TransactionAttribute txAttr = computeTransactionAttribute(method, targetClass);
 			// Put it in the cache.
 			if (txAttr == null) {
@@ -156,9 +158,13 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 
 		// The method may be on an interface, but we need attributes from the target class.
 		// If the target class is null, the method will be unchanged.
+		// method : public void spring.tx.ManagerService.insert(),可能是接口的方法
+		// targetClass:class spring.tx.ManagerService // 目标类
+		//  method代表接口中的方法，specificMethod代表实现类中的方法
 		Method specificMethod = AopUtils.getMostSpecificMethod(method, targetClass);
 
 		// First try is the method in the target class.
+		// 实现类的方法-->实现类-->接口方法-->接口上  是否有transactional注解
 		TransactionAttribute txAttr = findTransactionAttribute(specificMethod);
 		if (txAttr != null) {
 			return txAttr;

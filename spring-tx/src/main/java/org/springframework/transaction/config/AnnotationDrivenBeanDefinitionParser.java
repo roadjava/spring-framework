@@ -144,8 +144,11 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 				RootBeanDefinition advisorDef = new RootBeanDefinition(BeanFactoryTransactionAttributeSourceAdvisor.class);
 				advisorDef.setSource(eleSource);
 				advisorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+				// 设置pointcut
 				advisorDef.getPropertyValues().add("transactionAttributeSource", new RuntimeBeanReference(sourceName));
+				// 设置advice
 				advisorDef.getPropertyValues().add("adviceBeanName", interceptorName);
+				// 通过pc+advice设置===>组成了advisor
 				if (element.hasAttribute("order")) {
 					advisorDef.getPropertyValues().add("order", element.getAttribute("order"));
 				}
@@ -154,6 +157,10 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 				CompositeComponentDefinition compositeDef = new CompositeComponentDefinition(element.getTagName(), eleSource);
 				compositeDef.addNestedComponent(new BeanComponentDefinition(sourceDef, sourceName));
 				compositeDef.addNestedComponent(new BeanComponentDefinition(interceptorDef, interceptorName));
+				//注册进ioc的BeanFactoryTransactionAttributeSourceAdvisor实现了advisor接口
+				//在org.springframework.aop.framework.autoproxy.
+				// BeanFactoryAdvisorRetrievalHelper.findAdvisorBeans处会找到所有实现了advisor的
+				//bean
 				compositeDef.addNestedComponent(new BeanComponentDefinition(advisorDef, txAdvisorBeanName));
 				parserContext.registerComponent(compositeDef);
 			}

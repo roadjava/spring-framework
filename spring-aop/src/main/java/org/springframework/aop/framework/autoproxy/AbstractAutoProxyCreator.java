@@ -342,7 +342,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (StringUtils.hasLength(beanName) && this.targetSourcedBeans.contains(beanName)) {
 			return bean;
 		}
-		// 已经增强过了
+		// 在本方法尾部存入的不需要代理的
 		if (Boolean.FALSE.equals(this.advisedBeans.get(cacheKey))) {
 			return bean;
 		}
@@ -364,7 +364,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			// AopServiceImpl$$EnhancerBySpringCGLIB$$66202dc2@2428
 			return proxy;
 		}
-
+		// 没找到advisor即不需要代理
 		this.advisedBeans.put(cacheKey, Boolean.FALSE);
 		return bean;
 	}

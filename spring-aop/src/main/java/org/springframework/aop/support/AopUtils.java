@@ -220,6 +220,7 @@ public abstract class AopUtils {
 	 * @param hasIntroductions whether or not the advisor chain
 	 * for this bean includes any introductions
 	 * @return whether the pointcut can apply on any method
+	 * pc:如TransactionAttributeSourcePointcut
 	 */
 	public static boolean canApply(Pointcut pc, Class<?> targetClass, boolean hasIntroductions) {
 		Assert.notNull(pc, "Pointcut must not be null");
@@ -227,7 +228,7 @@ public abstract class AopUtils {
 		if (!pc.getClassFilter().matches(targetClass)) {
 			return false;
 		}
-
+		// pc.getMethodMatcher()返回的是this
 		MethodMatcher methodMatcher = pc.getMethodMatcher();
 		if (methodMatcher == MethodMatcher.TRUE) {
 			// No need to iterate the methods if we're matching any method anyway...
@@ -241,8 +242,10 @@ public abstract class AopUtils {
 
 		Set<Class<?>> classes = new LinkedHashSet<>();
 		if (!Proxy.isProxyClass(targetClass)) {
+			// 用户自己的类
 			classes.add(ClassUtils.getUserClass(targetClass));
 		}
+		// 获取targetClass的所有接口
 		classes.addAll(ClassUtils.getAllInterfacesForClassAsSet(targetClass));
 
 		for (Class<?> clazz : classes) {
@@ -255,6 +258,7 @@ public abstract class AopUtils {
 				if (introductionAwareMethodMatcher != null ?
 						introductionAwareMethodMatcher.matches(method, targetClass, hasIntroductions) :
 						methodMatcher.matches(method, targetClass)) {
+					// 如TransactionAttributeSourcePointcut.matches
 					return true;
 				}
 			}
@@ -290,7 +294,8 @@ public abstract class AopUtils {
 			return ((IntroductionAdvisor) advisor).getClassFilter().matches(targetClass);
 		}
 		else if (advisor instanceof PointcutAdvisor) {
-			// advisor:InstantiationModelAwarePointcutAdvisor
+			// advisor:InstantiationModelAwarePointcutAdvisor,
+			// BeanFactoryTransactionAttributeSourceAdvisor
 			// targetClass:class spring.aop.service.impl.AopServiceImpl
 			PointcutAdvisor pca = (PointcutAdvisor) advisor;
 			return canApply(pca.getPointcut(), targetClass, hasIntroductions);

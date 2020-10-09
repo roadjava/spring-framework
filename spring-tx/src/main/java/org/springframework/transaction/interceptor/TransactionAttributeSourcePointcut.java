@@ -43,6 +43,7 @@ abstract class TransactionAttributeSourcePointcut extends StaticMethodMatcherPoi
 
 	@Override
 	public boolean matches(Method method, Class<?> targetClass) {
+		// tx:annotation-driven解析时注入ioc中,tas:AnnotationTransactionAttributeSource
 		TransactionAttributeSource tas = getTransactionAttributeSource();
 		return (tas == null || tas.getTransactionAttribute(method, targetClass) != null);
 	}

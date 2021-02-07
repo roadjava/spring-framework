@@ -52,9 +52,12 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 		registerAdvisorAdapter(new ThrowsAdviceAdapter());
 	}
 
-
+	/**
+	 * @throws UnknownAdviceTypeException 只处理Advisor 和 Advice两种类型，如果不是将不能封装
+	 */
 	@Override
 	public Advisor wrap(Object adviceObject) throws UnknownAdviceTypeException {
+		// 如果本身即是Advisor类型，则不需要操作
 		if (adviceObject instanceof Advisor) {
 			return (Advisor) adviceObject;
 		}
@@ -75,13 +78,21 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 		throw new UnknownAdviceTypeException(advice);
 	}
 
+	/**
+	 * 确保所有的advice都转为MethodInterceptor
+	 * @param advisor the Advisor to find an interceptor for
+	 * @return
+	 * @throws UnknownAdviceTypeException
+	 */
 	@Override
 	public MethodInterceptor[] getInterceptors(Advisor advisor) throws UnknownAdviceTypeException {
 		List<MethodInterceptor> interceptors = new ArrayList<>(3);
 		Advice advice = advisor.getAdvice();
+		// AspectJAfterAdvice AspectJAroundAdvice
 		if (advice instanceof MethodInterceptor) {
 			interceptors.add((MethodInterceptor) advice);
 		}
+		// AspectJMethodBeforeAdvice AspectJAfterReturningAdvice  AspectJAfterThrowingAdvice
 		for (AdvisorAdapter adapter : this.adapters) {
 			if (adapter.supportsAdvice(advice)) {
 				interceptors.add(adapter.getInterceptor(advisor));

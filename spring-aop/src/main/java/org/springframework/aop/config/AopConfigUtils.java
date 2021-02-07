@@ -58,9 +58,9 @@ public abstract class AopConfigUtils {
 
 	static {
 		// Set up the escalation list...
-		APC_PRIORITY_LIST.add(InfrastructureAdvisorAutoProxyCreator.class);
+		APC_PRIORITY_LIST.add(InfrastructureAdvisorAutoProxyCreator.class); // tx
 		APC_PRIORITY_LIST.add(AspectJAwareAdvisorAutoProxyCreator.class);
-		APC_PRIORITY_LIST.add(AnnotationAwareAspectJAutoProxyCreator.class);
+		APC_PRIORITY_LIST.add(AnnotationAwareAspectJAutoProxyCreator.class); // aop
 	}
 
 
@@ -114,7 +114,11 @@ public abstract class AopConfigUtils {
 		}
 	}
 
-	@Nullable // escalate 升级
+	/**
+	 * escalate 升级 apc:auto proxy creator
+	 * @param cls AnnotationAwareAspectJAutoProxyCreator
+	 */
+	@Nullable
 	private static BeanDefinition registerOrEscalateApcAsRequired(
 			Class<?> cls, BeanDefinitionRegistry registry, @Nullable Object source) {
 
@@ -126,6 +130,10 @@ public abstract class AopConfigUtils {
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {
 				int currentPriority = findPriorityForClass(apcDefinition.getBeanClassName());
 				int requiredPriority = findPriorityForClass(cls);
+				/*
+				InfrastructureAdvisorAutoProxyCreator < AspectJAwareAdvisorAutoProxyCreator
+				< AnnotationAwareAspectJAutoProxyCreator
+				 */
 				if (currentPriority < requiredPriority) {
 					// 改变了使用的class
 					apcDefinition.setBeanClassName(cls.getName());

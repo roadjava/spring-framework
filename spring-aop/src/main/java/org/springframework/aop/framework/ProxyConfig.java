@@ -63,6 +63,7 @@ public class ProxyConfig implements Serializable {
 
 	/**
 	 * Return whether to proxy the target class directly as well as any interfaces.
+	 * true:cglib代理目标类
 	 */
 	public boolean isProxyTargetClass() {
 		return this.proxyTargetClass;

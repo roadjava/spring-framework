@@ -103,7 +103,7 @@ public class ProxyCreatorSupport extends AdvisedSupport {
 			activate();
 		}
 		// aopProxyFactory----DefaultAopProxyFactory
-		// proxyFactory----ProxyFactory
+		// this:ProxyFactory对象
 		return getAopProxyFactory().createAopProxy(this);
 	}
 

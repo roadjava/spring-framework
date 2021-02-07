@@ -290,6 +290,7 @@ public abstract class AopUtils {
 	 * @return whether the pointcut can apply on any method
 	 */
 	public static boolean canApply(Advisor advisor, Class<?> targetClass, boolean hasIntroductions) {
+		// PointcutAdvisor可以精确到方法级别，粒度更细，aspectj获得的都是PointcutAdvisor
 		if (advisor instanceof IntroductionAdvisor) {
 			return ((IntroductionAdvisor) advisor).getClassFilter().matches(targetClass);
 		}
@@ -319,6 +320,7 @@ public abstract class AopUtils {
 			return candidateAdvisors;
 		}
 		List<Advisor> eligibleAdvisors = new ArrayList<>();
+		// 先处理IntroductionAdvisor类型的advisor
 		for (Advisor candidate : candidateAdvisors) {
 			// InstantiationModelAwarePointcutAdvisor:
 			// expression [spring.aop.MyAspect.pt()];

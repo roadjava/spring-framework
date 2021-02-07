@@ -118,6 +118,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 		if (logger.isTraceEnabled()) {
 			logger.trace("Creating JDK dynamic proxy: " + this.advised.getTargetSource());
 		}
+		// 获取要被代理的接口
 		Class<?>[] proxiedInterfaces = AopProxyUtils.completeProxiedInterfaces(this.advised, true);
 		findDefinedEqualsAndHashCodeMethods(proxiedInterfaces);
 		return Proxy.newProxyInstance(classLoader, proxiedInterfaces, this);
@@ -158,15 +159,17 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		Object oldProxy = null;
 		boolean setProxyContext = false;
-		// SingletonTargetSource for target object [spring.aop.service.impl.HouseServiceImpl@6e9c413e]
+		// 获取目标源:SingletonTargetSource for target object [spring.aop.service.impl.HouseServiceImpl@6e9c413e]
 		TargetSource targetSource = this.advised.targetSource;
 		Object target = null;
 
 		try {
+			// 处理equals方法
 			if (!this.equalsDefined && AopUtils.isEqualsMethod(method)) {
 				// The target does not implement the equals(Object) method itself.
 				return equals(args[0]);
 			}
+			// 处理hashcode方法
 			else if (!this.hashCodeDefined && AopUtils.isHashCodeMethod(method)) {
 				// The target does not implement the hashCode() method itself.
 				return hashCode();
@@ -182,7 +185,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 			}
 
 			Object retVal;
-
+			// 是否暴露代理对象。目标对象内部的自我调用无法实施切面中的增强，则需要通过此属性暴露
 			if (this.advised.exposeProxy) {
 				// Make invocation available if necessary.
 				oldProxy = AopContext.setCurrentProxy(proxy);
@@ -195,8 +198,14 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 			// class spring.aop.service.impl.HouseServiceImpl
 			Class<?> targetClass = (target != null ? target.getClass() : null);
 
-			// Get the interception chain for this method. 不包含method本身
-			// [advice(AopByClassic1@1234)]
+			/*
+			 获取当前方法的拦截链路，其中包括将 AspectJMethodBeforeAdvice、
+			 AspectJAfterAdvice(实现了MethodInterceptor)、AspectJAfterReturningAdvice
+			  AspectJAroundAdvice(实现了MethodInterceptor)、AspectJAfterThrowingAdvice
+			  转换成 MethodInterceptor
+			 Get the interception chain for this method. 不包含method本身
+			 如:[advice(AopByClassic1@1234)]
+			 */
 			List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);
 
 			// Check whether we have any advice. If we don't, we can fallback on direct
@@ -205,6 +214,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 				// We can skip creating a MethodInvocation: just invoke the target directly
 				// Note that the final invoker must be an InvokerInterceptor so we know it does
 				// nothing but a reflective operation on the target, and no hot swapping or fancy proxying.
+				// 直接调用目标方法
 				Object[] argsToUse = AopProxyUtils.adaptArgumentsIfNecessary(method, args);
 				retVal = AopUtils.invokeJoinpointUsingReflection(target, method, argsToUse);
 			}

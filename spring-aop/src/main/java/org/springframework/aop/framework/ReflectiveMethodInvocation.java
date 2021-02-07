@@ -155,6 +155,11 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 	}
 
 
+	/**
+	 * 维护着调用链的位置，各个增强器的调用顺序由各个增强器内部来决定
+	 * @return
+	 * @throws Throwable
+	 */
 	@Override
 	@Nullable
 	public Object proceed() throws Throwable {
@@ -204,6 +209,7 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 			4.org.springframework.aop.aspectj.AspectJAfterAdvice.invoke
 			5.org.aopalliance.intercept.MethodInterceptor.invoke
 			6.org.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor.invoke
+			this传进去以便循环调用
 			 */
 			return ((MethodInterceptor) interceptorOrInterceptionAdvice).invoke(this);
 		}

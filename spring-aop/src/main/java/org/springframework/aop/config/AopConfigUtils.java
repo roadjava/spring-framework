@@ -116,7 +116,8 @@ public abstract class AopConfigUtils {
 
 	/**
 	 * escalate 升级 apc:auto proxy creator
-	 * @param cls AnnotationAwareAspectJAutoProxyCreator
+	 * @param cls AnnotationAwareAspectJAutoProxyCreator、
+	 *            InfrastructureAdvisorAutoProxyCreator
 	 */
 	@Nullable
 	private static BeanDefinition registerOrEscalateApcAsRequired(
@@ -133,6 +134,7 @@ public abstract class AopConfigUtils {
 				/*
 				InfrastructureAdvisorAutoProxyCreator < AspectJAwareAdvisorAutoProxyCreator
 				< AnnotationAwareAspectJAutoProxyCreator
+				下标越大优先级越高
 				 */
 				if (currentPriority < requiredPriority) {
 					// 改变了使用的class

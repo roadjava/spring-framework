@@ -81,6 +81,7 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 	}
 
 	/**
+	 * 初始化annotationParsers
 	 * Create a custom AnnotationTransactionAttributeSource, supporting
 	 * public methods that carry the {@code Transactional} annotation
 	 * or the EJB3 {@link javax.ejb.TransactionAttribute} annotation.

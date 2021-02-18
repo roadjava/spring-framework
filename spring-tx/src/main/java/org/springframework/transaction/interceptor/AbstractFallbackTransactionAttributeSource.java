@@ -80,6 +80,7 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 
 
 	/**
+	 * 获得事务属性
 	 * Determine the transaction attribute for this method invocation.
 	 * <p>Defaults to the class's transaction attribute if no method attribute is found.
 	 * @param method the method for the current invocation (never {@code null})
@@ -90,6 +91,7 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 	@Override
 	@Nullable
 	public TransactionAttribute getTransactionAttribute(Method method, @Nullable Class<?> targetClass) {
+		// 是object的方法
 		if (method.getDeclaringClass() == Object.class) {
 			return null;
 		}
@@ -152,6 +154,7 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 	@Nullable
 	protected TransactionAttribute computeTransactionAttribute(Method method, @Nullable Class<?> targetClass) {
 		// Don't allow no-public methods as required.
+		// 只允许public方法
 		if (allowPublicMethodsOnly() && !Modifier.isPublic(method.getModifiers())) {
 			return null;
 		}

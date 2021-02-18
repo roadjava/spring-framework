@@ -330,6 +330,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 			final InvocationCallback invocation) throws Throwable {
 
 		// If the transaction attribute is null, the method is non-transactional.
+		// tas: AnnotationTransactionAttributeSource
 		TransactionAttributeSource tas = getTransactionAttributeSource();
 		final TransactionAttribute txAttr = (tas != null ? tas.getTransactionAttribute(method, targetClass) : null);
 		// 获取beanFactory中的transactionManager
@@ -352,7 +353,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 			return txSupport.invokeWithinTransaction(
 					method, targetClass, invocation, txAttr, (ReactiveTransactionManager) tm);
 		}
-
+		// 判断tm是否是PlatformTransactionManager类型，是则强转，不是则抛异常
 		PlatformTransactionManager ptm = asPlatformTransactionManager(tm);
 		// 构造方法唯一标识（类.方法，如：service.UserServiceImpl.save）
 		final String joinpointIdentification = methodIdentification(method, targetClass, txAttr);
@@ -360,7 +361,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		// 声明式事务处理,即通过注解方式
 		if (txAttr == null || !(ptm instanceof CallbackPreferringPlatformTransactionManager)) {
 			// Standard transaction demarcation with getTransaction and commit/rollback calls.
-			//创建TransactionInfo
+			//创建TransactionInfo,因为spring中定义的tx传播属性，如required就不需要创建新的事务
 			TransactionInfo txInfo = createTransactionIfNecessary(ptm, txAttr, joinpointIdentification);
 
 			Object retVal;
@@ -379,6 +380,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				throw ex;
 			}
 			finally {
+				// 提交之前清除事务信息
 				cleanupTransactionInfo(txInfo);
 			}
 
@@ -394,12 +396,13 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 			return retVal;
 		}
 
-		else {
+		else { // 编程式事务处理
 			final ThrowableHolder throwableHolder = new ThrowableHolder();
 
 			// It's a CallbackPreferringPlatformTransactionManager: pass a TransactionCallback in.
 			try {
-				// 编程式事务处理
+				//直接调用execute 方法。由于事务的提交回滚等操作都已被使用者封装好了，
+				// 所以这里并没有对事务进行详细的操作
 				Object result = ((CallbackPreferringPlatformTransactionManager) ptm).execute(txAttr, status -> {
 					TransactionInfo txInfo = prepareTransactionInfo(ptm, txAttr, joinpointIdentification, status);
 					try {
@@ -578,7 +581,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		TransactionStatus status = null;
 		if (txAttr != null) {
 			if (tm != null) {
-				// 获取事务status
+				// 获取事务status:DefaultTransactionStatus
 				status = tm.getTransaction(txAttr);
 			}
 			else {
